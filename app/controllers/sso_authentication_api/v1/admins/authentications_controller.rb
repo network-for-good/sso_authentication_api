@@ -1,4 +1,4 @@
-require 'nfg_jwt_token_security/secure_api'
+require 'sso_authentication_api/secure_api'
 
 module SsoAuthenticationApi::V1
   module Admins
