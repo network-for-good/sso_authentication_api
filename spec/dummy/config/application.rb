@@ -4,6 +4,9 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 require "sso_authentication_api"
+require "responders"
+require "sqlite3"
+require "active_model_serializers"
 
 module Dummy
   class Application < Rails::Application

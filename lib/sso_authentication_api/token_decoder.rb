@@ -8,7 +8,7 @@ module SsoAuthenticationApi
     end
 
     def self.public_key
-      @@public_key ||= certificate.public_key
+      certificate.public_key
     end
 
     def self.cert_file_path
@@ -21,7 +21,7 @@ module SsoAuthenticationApi
     end
 
     def self.certificate
-      OpenSSL::X509::Certificate.new(File.read(cert_file_path))
+      @@certificate ||= OpenSSL::X509::Certificate.new(File.read(cert_file_path))
     end
 
   end

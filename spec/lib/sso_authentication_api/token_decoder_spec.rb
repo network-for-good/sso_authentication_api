@@ -9,25 +9,33 @@ describe SsoAuthenticationApi::TokenDecoder do
   let(:certificate) { OpenSSL::X509::Certificate.new(File.read(cert_file_path)) }
   let(:file_name) { 'nfg_qa.cer' }
 
+  before(:each) do
+    # since we are using class variables, we need to reload
+    # the class between tests to ensure we are getting the correct
+    # versions of the certs
+    SsoAuthenticationApi.send(:remove_const, 'TokenDecoder')
+    load 'sso_authentication_api/token_decoder.rb'
+  end
+
   describe ".certificate" do
     subject { decoder_class.certificate }
     it "should return the OpenSSL version of the qa cert" do
       cert_file = File.read(cert_file_path)
-      File.expects(:read).with(cert_file_path).returns(cert_file)
-      OpenSSL::X509::Certificate.expects(:new).with(cert_file)
+      expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
+      expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
       subject
     end
 
     context "when running in production" do
       before do
-        Rails.stubs(:env).returns(ActiveSupport::StringInquirer.new("production"))
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
       end
       let(:file_name) { 'nfg_production.cer' }
 
       it "should return the OpenSSL version of the production cert" do
         cert_file = File.read(cert_file_path)
-        File.expects(:read).with(cert_file_path).returns(cert_file)
-        OpenSSL::X509::Certificate.expects(:new).with(cert_file)
+        expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
+        expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
         subject
       end
 
@@ -37,8 +45,8 @@ describe SsoAuthenticationApi::TokenDecoder do
   describe ".public_key" do
     subject { decoder_class.public_key }
     it "should return the public key associated with the current environment" do
-      certificate.expects(:public_key).returns(public_key)
-      decoder_class.expects(:certificate).returns(certificate)
+      expect(certificate).to receive(:public_key).and_return(public_key)
+      expect(decoder_class).to receive(:certificate).and_return(certificate)
       expect(subject).to eq(public_key)
     end
   end
