@@ -9,7 +9,7 @@ It offers a single interface, and returns information about the user using http 
 To inquire about a user, other systems should submit a post to:
 
 ````
-[domain]/sso_authentication_api/v1/admins/authentications
+[domain]/api/v1/admins/authentications
 ````
 
 The domains are as follows:
