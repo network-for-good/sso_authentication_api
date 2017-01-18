@@ -60,6 +60,7 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
     end
 
     context "when the params match the email of one admin" do
+      let(:params) { default_params.merge(email: email, password: password) }
 
       before do
         allow(admin).to receive(:valid_password?).with(password).and_return(authenticated)
@@ -69,7 +70,6 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
       let(:admins) { [admin] }
       context "and the password params also matches" do
         let(:authenticated) { true }
-        let(:params) { default_params.merge(email: email, password: password) }
 
         it_should_behave_like "an authorized admin"
       end
@@ -77,7 +77,7 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
 
       context "and the password param does not match" do
         let(:authenticated) { false }
-        let(:params) { default_params.merge(email: email, password: "not a matching password") }
+        let(:password) { "not a matching password" }
 
         it_should_behave_like "an unauthorized admin"
       end
@@ -85,13 +85,13 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
       context "and the passord params is blank" do
         let(:password) { "" }
         let(:authenticated) { false }
-        let(:params) { default_params.merge(email: email, password: "") }
 
         it_should_behave_like "an unauthorized admin"
       end
 
       context "and no password param is included" do
         let(:params) { default_params.merge(email: email) }
+        let(:password) { nil }
         let(:authenticated) { false }
 
         it_should_behave_like "an unauthorized admin"
@@ -106,7 +106,8 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
       end
 
       let(:admins) { [] }
-      let(:params) { default_params.merge(email: "not@matching.com", password: "aisid") }
+      let(:params) { default_params.merge(email: email, password: "aisid") }
+      let(:email) { "not@matching.com" }
 
       it "should return a 404" do
         expect(subject).to have_http_status(404)
