@@ -27,7 +27,7 @@ module SsoAuthenticationApi
         end
 
         def load_admin
-          admins = Admin.where(email: params[:email].downcase)
+          admins = Admin.where(email: params[:email].try(:downcase))
           return if admins.empty?
           if @admin = first_authenticated_admin(admins)
             @status = 200
