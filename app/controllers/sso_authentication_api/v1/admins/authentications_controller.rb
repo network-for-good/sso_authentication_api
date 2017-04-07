@@ -12,7 +12,6 @@ module SsoAuthenticationApi
         respond_to :json
 
         def create
-          # byebug
           render(json: { errors: "Request must include an email param"}, status: 500) and return if params[:email].nil?
           render(json: { errors: "Admin could not be found"}, status: 404) and return unless @admin
 
@@ -28,7 +27,7 @@ module SsoAuthenticationApi
         end
 
         def load_admin
-          admins = Admin.where(email: params[:email])
+          admins = Admin.where(email: params[:email].downcase)
           return if admins.empty?
           if @admin = first_authenticated_admin(admins)
             @status = 200
