@@ -19,35 +19,76 @@ describe SsoAuthenticationApi::TokenDecoder do
 
   describe ".certificate" do
     subject { decoder_class.certificate }
-    it "should return the OpenSSL version of the qa cert" do
-      cert_file = File.read(cert_file_path)
-      expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
-      expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
-      subject
-    end
 
-    context "when running in production" do
-      before do
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
-      end
-      let(:file_name) { 'nfg_production.cer' }
-
-      it "should return the OpenSSL version of the production cert" do
+    context 'when using the primary certificate' do
+      it "should return the OpenSSL version of the qa cert" do
         cert_file = File.read(cert_file_path)
         expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
         expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
         subject
       end
 
+      context "when running in production" do
+        before do
+          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        end
+        let(:file_name) { 'nfg_production.cer' }
+
+        it "should return the OpenSSL version of the production cert" do
+          cert_file = File.read(cert_file_path)
+          expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
+          expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
+          subject
+        end
+      end
+    end
+
+    context "when using the secondary certificate" do
+      subject { decoder_class.certificate(true) }
+      let(:file_name) { 'nfg_qa_secondary.cer' }
+
+      it "should return the OpenSSL version of the qa secondary cert" do
+        cert_file = File.read(cert_file_path)
+        expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
+        expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
+        subject
+      end
+
+      context "when running in production" do
+        before do
+          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        end
+        let(:file_name) { 'nfg_production_secondary.cer' }
+
+        it "should return the OpenSSL version of the production cert" do
+          cert_file = File.read(cert_file_path)
+          expect(File).to receive(:read).with(cert_file_path).and_return(cert_file)
+          expect(OpenSSL::X509::Certificate).to receive(:new).with(cert_file)
+          subject
+        end
+      end
     end
   end
 
   describe ".public_key" do
     subject { decoder_class.public_key }
-    it "should return the public key associated with the current environment" do
-      expect(certificate).to receive(:public_key).and_return(public_key)
-      expect(decoder_class).to receive(:certificate).and_return(certificate)
-      expect(subject).to eq(public_key)
+
+    context "when using the primary certificate" do
+      it "should return the public key associated with the current environment" do
+        expect(certificate).to receive(:public_key).and_return(public_key)
+        expect(decoder_class).to receive(:certificate).and_return(certificate)
+        expect(subject).to eq(public_key)
+      end
+    end
+
+    context "when using the secondary certificate" do
+      subject { decoder_class.public_key(true) }
+
+      it "should return the public key associated with the current environment" do
+        expect(certificate).to receive(:public_key).and_return(public_key)
+        expect(decoder_class).to receive(:certificate).with(true).and_return(certificate)
+        expect(subject).to eq(public_key)
+      end
     end
   end
 
@@ -57,6 +98,16 @@ describe SsoAuthenticationApi::TokenDecoder do
 
     it "should return a decoded token" do
       expect(subject).to eq(decoded_token)
+    end
+
+    context 'when the token was generated from the secondary certificate' do
+      let(:token) { "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InRlUDlQYkUzcEd1dFZBYjZNMXRNaEhmUjY0SSIsImtpZCI6InRlUDlQYkUzcEd1dFZBYjZNMXRNaEhmUjY0SSJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5LXVhdC5uZXR3b3JrZm9yZ29vZC5vcmciLCJhdWQiOiJodHRwczovL2lkZW50aXR5LXVhdC5uZXR3b3JrZm9yZ29vZC5vcmcvcmVzb3VyY2VzIiwiZXhwIjoxNjU1NDI1NjczLCJuYmYiOjE0OTc2Mzc2NzMsImNsaWVudF9pZCI6Im5mZ3dlYmFwaSIsImNsaWVudF9wYXJ0bmVyX2lkIjoiMTAwMjMxIiwiY2xpZW50X2NhcGFiaWxpdGllcyI6WyI1IiwiNyIsIjgiLCI5IiwiMTAiLCIxMSIsIjEyIiwiMjEiXSwiY2xpZW50X2NhbXBhaWduQ2FwYWJpbGl0aWVzMTA2NzIiOiIwIiwiY2xpZW50X2NhbXBhaWduQ2FwYWJpbGl0aWVzMTA4NDEiOiIwIiwiY2xpZW50X2NhbXBhaWduQ2FwYWJpbGl0aWVzMTA4NDIiOiIwIiwiY2xpZW50X2NhbXBhaWduQ2FwYWJpbGl0aWVzMTA4NDMiOiIwIiwiY2xpZW50X2NhbXBhaWduQ2FwYWJpbGl0aWVzMTA4NjIiOlsiMCIsIjEwIl0sImNsaWVudF9jYW1wYWlnbkNhcGFiaWxpdGllczExMzkyIjpbIjAiLCI5IiwiMTAiXSwic2NvcGUiOlsiZG9uYXRpb24iLCJkb25hdGlvbi1yZXBvcnRpbmciLCJpZG1nciJdLCJqdGkiOiJhODAwN2FhNTI0NDJlNzQyZmNhNjEwMWU2ZTRmY2YxMCJ9.Km_IwEWQPBino1xhvIdfCOH1zdj7BA5k_RQ59reUx1x9rosacB5LbKSEDz2tg71dwzHq9hOLzC0Uf4MJyr76AojD-1CyDbPR1X0UekDhWUPq4JB8TZ5QgX8pGTVURIeRFTosP_8fLjM11pIvNexKvoFZ8YTyzUTfvZUaydMgmruamwHBjtj2Mqcs-hgQCZV-6LGF8gPHMHOkEC1hzTQ83aG6Rc_mvLW8wzDho_1sah2LTRjQLlSBP8TT4Dcu_zv1JSND-7BmP8mJZeVYZeAgxwRwlTeNrB0JcOrQyrvoowSEw7BCFEtYRlvLYA34RBNsQqHCLVsYneA7y9AykvN8-Q" }
+      let(:file_name) { 'nfg_qa_secondary.cer' }
+
+
+      it "should return a decoded token" do
+        expect(subject).to eq(decoded_token)
+      end
     end
   end
 end
