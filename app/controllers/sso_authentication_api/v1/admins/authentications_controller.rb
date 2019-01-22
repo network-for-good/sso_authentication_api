@@ -6,8 +6,8 @@ module SsoAuthenticationApi
       class AuthenticationsController < ActionController::Base
         include SsoAuthenticationApi::TokenAuthentication
 
-        before_filter :authorize_nfg_request!
-        before_filter :load_admin
+        before_action :authorize_nfg_request!
+        before_action :load_admin
 
         respond_to :json
 

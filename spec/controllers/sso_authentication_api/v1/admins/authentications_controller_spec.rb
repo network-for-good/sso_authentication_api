@@ -40,7 +40,7 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
     let(:authenticated) { true }
     let(:admins) { [] }
 
-    subject { post :create, params }
+    subject { post :create, params: params }
 
     context "with an invalid authorization token" do
       let(:qa_token) { "baz" }
@@ -52,7 +52,7 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
     end
 
     context "when no params are included" do
-      let(:params) { nil }
+      let(:params) { {} }
 
       it "should return a 500 error" do
         expect(subject).to have_http_status(500)
