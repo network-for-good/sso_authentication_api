@@ -27,7 +27,7 @@ describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
   end
   let(:default_params) { { format: :json, authorization: authorization } }
   let(:authorization) { "Bearer #{ qa_token }" }
-  let(:qa_token) { "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbnYiOiJ0ZXN0In0.rl1JEgm37TY3yvXVbK6D6gUWWrjRtJKd8NtlF0Kgbz0" }
+  let(:qa_token) { JWT.encode({ env: 'test' }, '', 'HS256') }
 
   routes { SsoAuthenticationApi::Engine.routes }
   let(:serialized_result) { ActiveModelSerializers::SerializableResource.new(resource,
