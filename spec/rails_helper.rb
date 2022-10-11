@@ -3,6 +3,9 @@ require 'rspec/rails'
 Rails.backtrace_cleaner.remove_silencers!
 ActiveRecord::Migrator.migrations_paths = 'spec/dummy/db/migrate'
 
+require "spec_helper"
+require 'rspec/rails'
+
 #
 # Load support files
 ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')
