@@ -4,6 +4,8 @@ module SsoAuthenticationApi
   module V1
     module Admins
       class AuthenticationsController < ActionController::Base
+        protect_from_forgery with: :null_session
+
         include SsoAuthenticationApi::TokenAuthentication
 
         before_action :authorize_nfg_request!

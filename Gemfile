@@ -11,8 +11,9 @@ gemspec
 # your gem to rubygems.org.
 
 group :test, :development do
-  gem 'token_decoder', git: 'git://github.com/network-for-good/token_decoder.git', branch: 'master'
+  source "https://rubygems.pkg.github.com/network-for-good" do
+    gem "token_decoder", ">=0.1.1"
+  end
 end
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
-
