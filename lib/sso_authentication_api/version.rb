@@ -1,3 +1,3 @@
 module SsoAuthenticationApi
-  VERSION = "6.0.1"
+  VERSION = "7.2.0.uat.1"
 end
