@@ -22,12 +22,20 @@ shared_examples_for "an unauthorized admin" do
 end
 
 describe SsoAuthenticationApi::V1::Admins::AuthenticationsController do
+  # jwt >= 2.7 rejects empty HMAC keys; use a fixed test secret and configure
+  # the token_decoder fallback to match so RS256 cert decode → HMAC fallback works
+  let(:jwt_test_secret) { 'sso_api_test_secret' }
+
   before do
+    TokenDecoder::Decoder.hmac_secret = jwt_test_secret
     controller.request.env["HTTP_AUTHORIZATION"] = authorization
   end
+
+  after { TokenDecoder::Decoder.hmac_secret = nil }
+
   let(:default_params) { { format: :json, authorization: authorization } }
   let(:authorization) { "Bearer #{ qa_token }" }
-  let(:qa_token) { JWT.encode({ env: 'test' }, '', 'HS256') }
+  let(:qa_token) { JWT.encode({ env: 'test' }, jwt_test_secret, 'HS256') }
 
   routes { SsoAuthenticationApi::Engine.routes }
   let(:serialized_result) { ActiveModelSerializers::SerializableResource.new(resource,
