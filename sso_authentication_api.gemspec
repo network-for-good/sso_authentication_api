@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "responders"
   s.add_dependency "active_model_serializers"
 
-  s.add_development_dependency "rspec-rails", '= 7.0.0'
+  s.add_development_dependency "rspec-rails", '~> 6.1'
   s.add_development_dependency "rspec_junit_formatter"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "pry"
