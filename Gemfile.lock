@@ -1,15 +1,15 @@
 GIT
   remote: https://github.com/network-for-good/token_decoder.git
-  revision: 1400b09fbec447fd5d8847bede381c5a158bae6a
-  branch: master
+  revision: 0ec5c3529ab9ec6650558c44f2ff5caa32ef6b27
+  branch: main
   specs:
     token_decoder (0.1.1)
-      jwt
+      jwt (>= 2.7)
 
 PATH
   remote: .
   specs:
-    sso_authentication_api (7.2.0.uat.1)
+    sso_authentication_api (7.2.0.uat.2)
       active_model_serializers
       rails (~> 7.2)
       responders
@@ -382,7 +382,7 @@ CHECKSUMS
   sqlite3 (2.9.6-x86_64-darwin) sha256=b5842fea77781c14da03fa7bc0feb82db03a69e135affcb6f5399cbd2797a5f3
   sqlite3 (2.9.6-x86_64-linux-gnu) sha256=613188ce02f614126ddbc38c5e217ccffd6306d0dcd9adca9764547aa890a634
   sqlite3 (2.9.6-x86_64-linux-musl) sha256=d493b11818a3573387a1d56e1ee8fa00da23a683a7a1cc063e7a0feeed843abf
-  sso_authentication_api (7.2.0.uat.1)
+  sso_authentication_api (7.2.0.uat.2)
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   timeout (0.6.1) sha256=78f57368a7e7bbadec56971f78a3f5ecbcfb59b7fcbb0a3ed6ddc08a5094accb
   token_decoder (0.1.1)
