@@ -285,6 +285,7 @@ PLATFORMS
 DEPENDENCIES
   pry
   pry-byebug
+  rails (~> 7.2.3, >= 7.2.3.2)
   rspec-rails (= 7.0.0)
   rspec_junit_formatter
   sqlite3
