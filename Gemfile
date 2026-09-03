@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Declare your gem's dependencies in sso_authentication_api.gemspec.
@@ -11,8 +13,7 @@ gemspec
 # your gem to rubygems.org.
 
 group :test, :development do
-  gem 'token_decoder', git: 'https://github.com/network-for-good/token_decoder.git', branch: 'master'
+  gem 'token_decoder', git: 'https://github.com/network-for-good/token_decoder.git', branch: 'main'
 end
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
-
