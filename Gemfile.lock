@@ -1,15 +1,7 @@
-GIT
-  remote: https://github.com/network-for-good/token_decoder.git
-  revision: 0ec5c3529ab9ec6650558c44f2ff5caa32ef6b27
-  branch: main
-  specs:
-    token_decoder (0.1.1)
-      jwt (>= 2.7)
-
 PATH
   remote: .
   specs:
-    sso_authentication_api (7.2.1.uat.1)
+    sso_authentication_api (7.2.3.1)
       active_model_serializers
       rails (~> 7.2)
       responders
@@ -271,6 +263,12 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     zeitwerk (2.8.3)
+
+GEM
+  remote: https://rubygems.pkg.github.com/network-for-good/
+  specs:
+    token_decoder (0.1.1)
+      jwt
 
 PLATFORMS
   aarch64-linux-gnu
